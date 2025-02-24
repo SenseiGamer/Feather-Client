@@ -1,11 +1,21 @@
 # Feather-Client
-git clone https://github.com/your-username/your-repository.git
-npm install feather-client-js --save
-# or
-yarn add feather-client-js
-import { FeatherClient } from "feather-client-js";
-const feather = FeatherClient("YOUR_API_KEY");
-git remote add origin https://github.com/your-username/your-repository.git
-git add .
-git commit -m "Initial commit"
-git push origin master
+var feathers = require('feathers/client');
+var io = require('socket.io-client/socket.io');
+var socketio = require('feathers-socket.io/client');
+var hooks = require('feathers-hooks');
+var auth = require('feathers-authentication/client');
+
+var socket = io('http://localhost:3030', {
+ transports: ['websocket']
+});
+var app = feathers()
+ .configure(socketio(socket))
+ .configure(hooks())
+ .configure(auth());
+
+var messageService = app.service('/match/the/server/url/for/messages');
+
+messageService.find({query:{put query here}}).then(function(response){
+// Messages will be at response.data if you have pagination turned on.
+// Otherwise response will be an array of messages.
+});
